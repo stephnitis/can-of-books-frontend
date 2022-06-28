@@ -1,6 +1,7 @@
 import React from 'react';
-import { Carousel } from 'react-bootstrap';
+import { Carousel, Container } from 'react-bootstrap';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
 
 let SERVER = process.env.REACT_APP_SERVER;
 
@@ -8,7 +9,9 @@ class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      showImages: false,
+      error: false
     }
   }
 
@@ -20,10 +23,15 @@ class BestBooks extends React.Component {
       let results = await axios.get(`${SERVER}/books`);
       console.log(results.data);
       this.setState({
-        books: results.data
+        books: results.data,
+        showImages: true
       })
     } catch(error){
       console.log('error:', error.response.data)
+      this.setState({
+        error: true
+
+      })
     }
   }
 
@@ -36,13 +44,16 @@ class BestBooks extends React.Component {
       let bookCarousel = this.state.books.map((book, index) => (
       <Carousel.Item key={index}>
         <img
-        className="photos"
+        className="d-block w-100"
         src="jaredd-craig-HH4WBGNyltc-unsplash.jpg"
         alt="slide one"
         />
-        <Carousel.Caption>{book.title}</Carousel.Caption>
-        <Carousel.Caption>{book.description}</Carousel.Caption>
+        <Carousel.Caption>
+          <h3>{book.title}</h3>
+          <p>{book.description}</p>
+        </Carousel.Caption>
       </Carousel.Item>
+
       
       
     ))
@@ -52,14 +63,20 @@ console.log(bookCarousel);
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
-        {this.state.books.length ? (
-          <p>Book Carousel coming soon</p>
-        ) : (
-          <h3>No Books Found :(</h3>
-        )}
+        {this.state.error === true 
+        ? 
+          <Alert>No Books Found :</Alert>
+        : 
+        <>
+          <Container>
+            <Carousel>
+              {bookCarousel}
+            </Carousel>
+          </Container>
+          </>}  
       </>
     )
-  }
+}
 }
 
 export default BestBooks;
