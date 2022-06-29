@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, Container } from 'react-bootstrap';
+import { Button, Form, Carousel, Container } from 'react-bootstrap';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 
@@ -12,6 +12,41 @@ class BestBooks extends React.Component {
       books: [],
       showImages: false,
       error: false
+    }
+  }
+
+  handleBookSubmit = (e) => {
+    e.preventDefault();
+    let newBook = {
+      title: e.target.title.value,
+      description: e.target.description.value,
+      //status: e.target.status.checked
+    }
+    this.postBooks(newBook)
+  }
+
+  postBooks = async (newBookObj) => {
+    try{
+      let url = `${SERVER}/books`;
+      let addBook = await axios.post(url, newBookObj);
+      this.setState({
+        books: [...this.state.books, addBook.data]
+      });
+    } catch(error) {
+      console.log('Error pulling book', error.response.data);
+    }
+  }
+
+  deleteBooks = async (id) => {
+    try{
+      let url = `${SERVER}/books/${id}`;
+      await axios.delete(url);
+      let updatedBooks = this.state.books.filter(book => book._id !== id);
+      this.setState({
+        books: updatedBooks
+      });
+    } catch(error) {
+      console.log('Error deleting book', error.response.data);
     }
   }
 
@@ -41,24 +76,27 @@ class BestBooks extends React.Component {
 
   render() {
     
-      let bookCarousel = this.state.books.map((book, index) => (
-      <Carousel.Item key={index}>
-        <img
-        className="d-block w-100"
-        src="jaredd-craig-HH4WBGNyltc-unsplash.jpg"
-        alt="slide one"
-        />
-        <Carousel.Caption>
-          <h3>{book.title}</h3>
-          <p>{book.description}</p>
-        </Carousel.Caption>
-      </Carousel.Item>
+      // let bookCarousel = this.state.books.map((book, index) => (
+      // <Carousel.Item key={index}>
+      //   <img
+      //   className="d-block w-100"
+      //   src="jaredd-craig-HH4WBGNyltc-unsplash.jpg"
+      //   alt="slide one"
+      //   />
+      //   <Carousel.Caption>
+      //     <h3>{book.title}</h3>
+      //     <p>{book.description}</p>
+      //   </Carousel.Caption>
+      //   <Carousel.Caption>
+      //     <Button onClick={() => this.deleteBooks(book._id)}>Delete</Button>
+      //   </Carousel.Caption>
+      // </Carousel.Item>
 
       
       
-    ))
+    // ))
     /* TODO: render all the books in a Carousel */
-console.log(bookCarousel);
+// console.log(bookCarousel);
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
@@ -70,10 +108,44 @@ console.log(bookCarousel);
         <>
           <Container>
             <Carousel>
-              {bookCarousel}
+              {this.state.books.map((book, index) => (
+      <Carousel.Item key={index}>
+        <img
+        className="d-block w-100"
+        src="jaredd-craig-HH4WBGNyltc-unsplash.jpg"
+        alt="slide one"
+        />
+        <Carousel.Caption>
+          <h3>{book.title}</h3>
+          <p>{book.description}</p>
+        </Carousel.Caption>
+        <Carousel.Caption>
+          <Button onClick={() => this.deleteBooks(book._id)}>Delete</Button>
+        </Carousel.Caption>
+      </Carousel.Item>
+
+      
+      
+    ))}
             </Carousel>
           </Container>
-          </>}  
+          </>}
+         <Container>
+          <Form onSubmit={this.handleBookSubmit}>
+            <Form.Group controlId="title">
+              <Form.Label>Title: </Form.Label>
+              <Form.Control type="text"/>
+            </Form.Group>
+            <Form.Group controlId="description">
+              <Form.Label>Description: </Form.Label>
+              <Form.Control type="text"/>
+            </Form.Group>
+            {/* <Form.Group>
+              <Form.Check type="checkbox" label="Read" />
+            </Form.Group> */}
+            <Button type="submit" >Add Book</Button>
+          </Form>
+          </Container>   
       </>
     )
 }
