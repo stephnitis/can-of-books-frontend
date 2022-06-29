@@ -8,6 +8,9 @@ class Profile extends Component {
     <>
     <h2>Alec Torres</h2>
     <p>Hello world!</p>
+
+    <h2>Stephanie Hill</h2>
+    <p>Avid Reader and connoisseur of books, leatherbound or otherwise.</p>
     </>
     )
   }
