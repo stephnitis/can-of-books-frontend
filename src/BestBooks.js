@@ -55,7 +55,7 @@ class BestBooks extends React.Component {
   }
 
   deleteBooks = async (id) => {
-    try {
+    try {      
       let url = `${SERVER}/books/${id}`;
       await axios.delete(url);
       let updatedBooks = this.state.books.filter(book => book._id !== id);
@@ -108,16 +108,6 @@ class BestBooks extends React.Component {
 
   render() {
 
-    // let books = this.state.books.map( book => (
-    //   <BookFormModal
-    //     book={book}
-    //     id={book._id}
-    //   />
-    // ))
-
-    // ))
-    /* TODO: render all the books in a Carousel */
-    // console.log(bookCarousel);
     return (
       <>
         <BookFormModal
