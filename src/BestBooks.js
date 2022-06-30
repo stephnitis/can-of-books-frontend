@@ -163,7 +163,7 @@ class BestBooks extends React.Component {
             </Form.Group>
             <Form.Group>
               <Form.Check type="checkbox" label="Read" />
-            </Form.Group> 
+            </Form.Group>
             <Button variant="dark" type="submit">Add Book</Button>
           </Form>
         </Container>

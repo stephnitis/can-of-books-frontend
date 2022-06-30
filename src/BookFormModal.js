@@ -19,10 +19,10 @@ class BookFormModal extends React.Component {
   render() {
 
     return (
-
+    <>
       <Modal className='h-100 p-5'
-        show={this.props.showModal}
-        onHide={this.props.handleOnHide}
+      show={this.props.showModal}
+      onHide={this.props.handleOnHide}
       >
         <Modal.Header closeButton>
           <Modal.Title>Modify Book!</Modal.Title>
@@ -41,10 +41,13 @@ class BookFormModal extends React.Component {
           </Form>
         </Modal.Body>
       </Modal>
+    </>
     )
   }
 
 }
+
+
 
 
 export default BookFormModal;

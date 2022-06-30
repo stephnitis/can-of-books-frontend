@@ -45,6 +45,18 @@ Finish time: 7:30 pm EST
 
 Actual time needed to complete: 2 hours 
 
+Lab 13
+
+Name of feature: Update Book Modal
+
+Estimate of time needed to complete: 3 hours 
+
+Start time: 5:30 pm EST
+
+Finish time: 7:30 pm EST
+
+Actual time needed to complete: 2 hours 
+
 # Start your own "Can of Books" App
 
 This repository has starter code to begin work on creating your own online bookshelf.
