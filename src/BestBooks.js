@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Form, Carousel, Container } from 'react-bootstrap';
+import { Button, Carousel, Container } from 'react-bootstrap';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 import BookFormModal from './BookFormModal'
+import Form from 'react-bootstrap/Form'
 
 let SERVER = process.env.REACT_APP_SERVER;
 
@@ -14,6 +15,7 @@ class BestBooks extends React.Component {
       showImages: false,
       error: false,
       showModal: false,
+      updatedBook: null
     }
   }
 
@@ -22,6 +24,13 @@ class BestBooks extends React.Component {
       showModal: false
     });
   };
+
+  handleShowModal = (book) => {
+    this.setState({
+      showModal: true,
+      updatedBook: book
+    })
+  }
 
   handleBookSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +57,6 @@ class BestBooks extends React.Component {
 
   deleteBooks = async (id) => {
     try {
-      await axios.delete(`${SERVER}/books/${id}`)
       let url = `${SERVER}/books/${id}`;
       await axios.delete(url);
       let updatedBooks = this.state.books.filter(book => book._id !== id);
@@ -60,7 +68,22 @@ class BestBooks extends React.Component {
     }
   }
 
-  /* TODO: Make a GET request to your API to fetch all the books from the database  */
+  updateBooks = async (bookToUpdate) => {
+    try {
+      let url = `${SERVER}/books/${bookToUpdate._id}`;
+      let updatedBook = await axios.put(url, bookToUpdate);
+      let updatedArray = this.state.books.map(existingBook => {
+        return existingBook._id === bookToUpdate._id
+          ? updatedBook.data
+          : existingBook
+      });
+      this.setState({
+        books: updatedArray,
+      })
+    } catch (error) {
+      console.log('Update Error: ', error.response.data);
+    }
+  }
 
   getBooks = async () => {
     console.log('books fired');
@@ -86,32 +109,16 @@ class BestBooks extends React.Component {
 
   render() {
 
-    // let bookCarousel = this.state.books.map((book, index) => (
-    // <Carousel.Item key={index}>
-    //   <img
-    //   className="d-block w-100"
-    //   src="jaredd-craig-HH4WBGNyltc-unsplash.jpg"
-    //   alt="slide one"
-    //   />
-    //   <Carousel.Caption>
-    //     <h3>{book.title}</h3>
-    //     <p>{book.description}</p>
-    //   </Carousel.Caption>
-    //   <Carousel.Caption>
-    //     <Button onClick={() => this.deleteBooks(book._id)}>Delete</Button>
-    //   </Carousel.Caption>
-    // </Carousel.Item>
-
-
-
-    // ))
-    /* TODO: render all the books in a Carousel */
-    // console.log(bookCarousel);
     return (
       <>
         <BookFormModal
-          showModal={this.state.showModal}
+          books={this.state.books}
           handleOnHide={this.handleOnHide}
+          postBooks={this.postBooks}
+          updateBooks={this.updateBooks}
+          handleBookSubmit={this.handleBookSubmit}
+          showModal={this.state.showModal}
+          updatedBook={this.state.updatedBook}
         />
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
@@ -133,15 +140,17 @@ class BestBooks extends React.Component {
                       <h3>{book.title}</h3>
                       <p>{book.description}</p>
                       <Button variant="dark" onClick={() => this.deleteBooks(book._id)}>Delete</Button>
+                      <Button
+                        variant="dark"
+                        onClick={() => this.handleShowModal(book)}>Update
+                      </Button>
                     </Carousel.Caption>
                   </Carousel.Item>
-
-
-
                 ))}
               </Carousel>
             </Container>
           </>}
+
         <Container>
           <Form onSubmit={this.handleBookSubmit}>
             <Form.Group controlId="title">
@@ -152,15 +161,16 @@ class BestBooks extends React.Component {
               <Form.Label>Description: </Form.Label>
               <Form.Control type="text" />
             </Form.Group>
-            {/* <Form.Group>
+            <Form.Group>
               <Form.Check type="checkbox" label="Read" />
-            </Form.Group> */}
-            <Button variant="dark" type="submit" >Add Book</Button>
+            </Form.Group> 
+            <Button variant="dark" type="submit">Add Book</Button>
           </Form>
         </Container>
       </>
     )
   }
 }
+
 
 export default BestBooks;
